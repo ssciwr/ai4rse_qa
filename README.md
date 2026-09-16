@@ -1,32 +1,21 @@
-# Welcome to Your Project
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Documentation Status](https://readthedocs.org/projects/None/badge/)](https://None.readthedocs.io/)
-[![codecov](https://codecov.io/none/None/None/branch/main/graph/badge.svg)](https://codecov.io/none/None/None)
 
-## Installation
+# Welcome to the Example project for the AI4RSE 2026 workshop on Quality Assurance
 
-The Python package `your_project` can be installed from PyPI:
+This project exists to exemplify elements of working effectively with coding agents.
+We are using the Pi Coding Agent here, a minimal open source system, and will built it out
+with extensions as we need.
+We are using a simple version of the Lotka-Volterra equations as an example problem. The project provides a small app to solve them, and our task is to create verification machinery for that.
 
-```
-python -m pip install your_project
-```
+```math
 
-## Development installation
+dx/dt &= \alpha x - \beta xy \\
 
-If you want to contribute to the development of `your_project`, we recommend
-the following editable installation from this repository:
 
-```
-python -m pip install --editable .[tests]
-```
-
-Having done so, the test suite can be run using `pytest`:
+dy/dt &= \delta xy - \gamma y
 
 ```
-python -m pytest
-```
 
-## Acknowledgments
+## Workshop branches
 
-This repository was set up using the [SSC Cookiecutter for Python Packages](https://github.com/ssciwr/cookiecutter-python-package).
+Use the [`tdd-bdd`](../../tree/tdd-bdd) branch for the exercises. The corresponding solutions are available in [`tdd-bdd-sol`](../../tree/tdd-bdd-sol).
