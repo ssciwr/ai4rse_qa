@@ -9,8 +9,8 @@ build-backend = "setuptools.build_meta"
 # a variety of build tools. Notably, the version specified here is the
 # single source of truth for your_project's version
 [project]
-name = "hgscomp"
-description = "An excercise project for the hgsmathcomp retreate 2026"
+name = "qa"
+description = "An excercise project for the ai4rse 2026 workshop"
 readme = "README.md"
 maintainers = [
     { name = "Harald Mack", email = "harald.mack@iwr.uni-heidelberg.de" },
