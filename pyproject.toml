@@ -43,4 +43,4 @@ where = ["src"]
 # The following is the configuration for the pytest test suite
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src/hgscomp"]
+pythonpath = ["src/qa"]

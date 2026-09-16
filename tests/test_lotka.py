@@ -1,4 +1,4 @@
-import hgscomp
+import qa
 
 """
 Known solution structure of Lotka-Volterra model gives us test cases to check correctness against:
