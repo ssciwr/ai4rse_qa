@@ -2,20 +2,18 @@
 # process itself. Being able to do this was the original reason to
 # introduce pyproject.toml
 [build-system]
-requires = [
-    "setuptools >=61",
-]
+requires = ["setuptools >=61"]
 build-backend = "setuptools.build_meta"
 
 # This section provides general project metadata that is used across
 # a variety of build tools. Notably, the version specified here is the
 # single source of truth for your_project's version
 [project]
-name = "your_project"
-description = "Add short description here"
+name = "qa"
+description = "An excercise project for the ai4rse 2026 workshop"
 readme = "README.md"
 maintainers = [
-    { name = "Your Name", email = "your@email.com" },
+    { name = "Harald Mack", email = "harald.mack@iwr.uni-heidelberg.de" },
 ]
 version = "0.0.1"
 requires-python = ">=3.10"
@@ -26,18 +24,14 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
+    "matplotlib>=3.10.9",
+    "numpy>=2.2.6",
+    "pyyaml>=6.0.3",
+    "scipy>=1.15.3",
 ]
 
 [project.optional-dependencies]
-tests = [
-    "pytest",
-    "pytest-cov",
-]
-docs = [
-    "sphinx",
-    "sphinx_mdinclude",
-    "sphinx_rtd_theme",
-]
+tests = ["pytest", "pytest-cov", " pytest-bdd"]
 
 
 # The following section contains setuptools-specific configuration
@@ -48,6 +42,5 @@ where = ["src"]
 
 # The following is the configuration for the pytest test suite
 [tool.pytest.ini_options]
-testpaths = [
-    "tests",
-]
+testpaths = ["tests"]
+pythonpath = ["src/hgscomp"]

@@ -1,21 +1,36 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+# AI4RSE 2026 Quality-Assurance Workshop
 
-# Welcome to the Example project for the AI4RSE 2026 workshop on Quality Assurance
+This repository contains the exercise project for the AI4RSE 2026 workshop on quality assurance. It uses a small implementation of the Lotka–Volterra predator–prey model as the example application and focuses on building verification machinery with test-driven development (TDD) and behaviour-driven development (BDD).
 
-This project exists to exemplify elements of working effectively with coding agents.
-We are using the Pi Coding Agent here, a minimal open source system, and will built it out
-with extensions as we need.
-We are using a simple version of the Lotka-Volterra equations as an example problem. The project provides a small app to solve them, and our task is to create verification machinery for that.
+## The model
+
+The model's right-hand side is
 
 ```math
-
-dx/dt &= \alpha x - \beta xy \\
-
-
-dy/dt &= \delta xy - \gamma y
-
+\frac{dx}{dt} = \alpha x - \beta xy
+\qquad
+\frac{dy}{dt} = \delta xy - \gamma y
 ```
+
+where `x` and `y` are the two population sizes and `alpha`, `beta`, `gamma`, and `delta` are model parameters.
 
 ## Workshop branches
 
-Use the [`tdd-bdd`](../../tree/tdd-bdd) branch for the exercises. The corresponding solutions are available in [`tdd-bdd-sol`](../../tree/tdd-bdd-sol).
+- `main` and [`tdd-bdd`](../../tree/tdd-bdd) contain the exercise material.
+- [`tdd-bdd-sol`](../../tree/tdd-bdd-sol) contains the corresponding solutions.
+
+## Run the tests
+
+Create an environment with Python 3.10 or later, install the test dependencies, then run pytest:
+
+```bash
+python -m pip install -e ".[tests]"
+python -m pytest
+```
+
+## Project layout
+
+- `src/qa/lotka.py` — the Lotka–Volterra implementation.
+- `tests/` — the exercise test suite.
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
