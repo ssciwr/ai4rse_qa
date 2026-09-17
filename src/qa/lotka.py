@@ -3,6 +3,16 @@ from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
 
 
+def lotka(t, x, alpha, beta, gamma, delta):
+    """
+    right hand side of lotka-volterra equations
+    t = time scalar
+    x = state vector [x, y]
+    """
+
+    return [alpha * x[0] - beta * x[0] * x[1], delta * x[0] * x[1] - gamma * x[1]]
+
+
 def solve_lotkavolterra(
     alpha=1.0,
     beta=0.1,
@@ -12,6 +22,7 @@ def solve_lotkavolterra(
     y0=0.0,
     t_end=10.0,
     n_points=100,
+    function=lotka,
 ):
     """Solve the Lotka-Volterra system and return time series.
 
@@ -33,7 +44,7 @@ def solve_lotkavolterra(
     """
 
     def rhs(t, state):
-        return lotka(t, state, alpha, beta, gamma, delta)
+        return function(t, state, alpha, beta, gamma, delta)
 
     t_eval = np.linspace(0, t_end, n_points)
     sol = solve_ivp(rhs, [0, t_end], [x0, y0], t_eval=t_eval, method="RK45")
@@ -54,16 +65,6 @@ def plot_phase(x, y):
     plt.xlabel("x")
     plt.ylabel("y")
     plt.show()
-
-
-def lotka(t, x, alpha, beta, gamma, delta):
-    """
-    right hand side of lotka-volterra equations
-    t = time scalar
-    x = state vector [x, y]
-    """
-
-    return [alpha * x[0] - beta * x[0] * x[1], delta * x[0] * x[1] - gamma * x[1]]
 
 
 if __name__ == "__main__":
