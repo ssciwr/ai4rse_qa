@@ -41,6 +41,7 @@ We want to built a tiny little app with the foollowing features:
 - You can use an auxilliary file to save the following two steps
 - For each feature, write one or more user stories, using the following scheme.
 ```As a <role>, I want to <capability> so I can <purpose/benefit>.```
+We need to decide on behavior contracts for our application to complete this step.
 These define a feature-level narrative for why the capability matters and for whom.
 - Clearly formulate each user story for the current feature as an observable acceptance criterion in a scenario
 ```
