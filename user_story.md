@@ -1,0 +1,2 @@
+As a researcher,
+I want to pass the parameters alpha, beta, gamma, delta and initial conditions x0, y0 as command line arguments to the lotka.py script, so that I see two plots of the solution of the lotka-volterra equations for these parameters and initial conditions: one of x(t), y(t) and the other one y(x).

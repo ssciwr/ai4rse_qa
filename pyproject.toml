@@ -31,7 +31,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-tests = ["pytest", "pytest-cov", " pytest-bdd"]
+tests = ["pytest", "pytest-cov", "pytest-bdd"]
 
 
 # The following section contains setuptools-specific configuration
@@ -43,4 +43,4 @@ where = ["src"]
 # The following is the configuration for the pytest test suite
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src/qa"]
+pythonpath = ["src"]
