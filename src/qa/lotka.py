@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.integrate import solve_ivp
+import matplotlib.pyplot as plt
 
 
 def solve_lotkavolterra(
@@ -40,7 +41,6 @@ def solve_lotkavolterra(
 
 
 def plot_time(t, x, y):
-    import matplotlib.pyplot as plt
 
     plt.plot(t, x, label="x")
     plt.plot(t, y, label="y")
@@ -49,7 +49,6 @@ def plot_time(t, x, y):
 
 
 def plot_phase(x, y):
-    import matplotlib.pyplot as plt
 
     plt.plot(x, y)
     plt.xlabel("x")
@@ -69,8 +68,11 @@ def lotka(t, x, alpha, beta, gamma, delta):
 
 if __name__ == "__main__":
     import argparse, sys
+
     if len(sys.argv) <= 1:
-        sys.stderr.write("Lotka Volterra equations need parameters alpha, beta, gamma, delta and initial conditions x0, y0\n")
+        sys.stderr.write(
+            "Lotka Volterra equations need parameters alpha, beta, gamma, delta and initial conditions x0, y0\n"
+        )
         sys.exit(1)
     parser = argparse.ArgumentParser()
     parser.add_argument("--alpha", type=float, required=True)
