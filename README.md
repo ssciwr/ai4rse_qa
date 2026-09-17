@@ -12,12 +12,12 @@ The model's right-hand side is
 \frac{dy}{dt} = \delta xy - \gamma y
 ```
 
-where `x` and `y` are the two population sizes and `alpha`, `beta`, `gamma`, and `delta` are model parameters.
+where $$x$$ and $$y$$ are the two population sizes and $$\alpha$$, $$\beta$$,  $$\gamma$$ and $$\delta$$ are model parameters.
 
 ## Workshop branches
 
-- `main` and [`tdd-bdd`](../../tree/tdd-bdd) contain the exercise material.
-- [`tdd-bdd-sol`](../../tree/tdd-bdd-sol) contains the corresponding solutions.
+- `tdd-bdd` contain the exercise material.
+- `tdd-bdd-sol` contains the corresponding solutions.
 
 ## Run the tests
 
