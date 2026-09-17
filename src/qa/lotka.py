@@ -12,14 +12,36 @@ def solve_lotkavolterra(
     t_end=10.0,
     n_points=100,
 ):
-    """Solve the Lotka--Volterra system and return its time series."""
+    """Solve the Lotka--Volterra system on an evenly spaced time grid.
+
+    Parameters are the four model rates, the initial populations ``x0`` and
+    ``y0``, and the end time and number of requested output points.  The
+    solution starts at time zero and is sampled through ``t_end``.
+
+    Returns
+    -------
+    tuple[numpy.ndarray, numpy.ndarray]
+        The prey and predator populations, respectively, at each requested
+        time point.
+    """
+    t_eval = np.linspace(0.0, t_end, n_points)
 
     def rhs(t, state):
         return lotka(t, state, alpha, beta, gamma, delta)
 
-    t_eval = np.linspace(0, t_end, n_points)
-    sol = solve_ivp(rhs, [0, t_end], [x0, y0], t_eval=t_eval, method="RK45")
-    return sol.t, sol.y[0], sol.y[1]
+    solution = solve_ivp(
+        rhs,
+        (0.0, t_end),
+        (x0, y0),
+        t_eval=t_eval,
+        method="RK45",
+        rtol=1e-8,
+        atol=1e-10,
+    )
+    if not solution.success:
+        raise RuntimeError(f"Lotka--Volterra integration failed: {solution.message}")
+
+    return solution.y[0], solution.y[1]
 
 
 def lotka(t, x, alpha, beta, gamma, delta):
