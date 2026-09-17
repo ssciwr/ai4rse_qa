@@ -1,83 +1,92 @@
-import os
-import subprocess
-import sys
-from pathlib import Path
+import numpy as np
 
 from pytest_bdd import given, scenarios, then, when
+
+from qa.lotka import solve_lotkavolterra
 
 
 scenarios("solve_lotka.feature")
 
 
-SCRIPT_PATH = Path(__file__).parents[1] / "src" / "qa" / "lotka.py"
-PARAMETERS = [
-    "--alpha",
-    "1",
-    "--beta",
-    "0.1",
-    "--gamma",
-    "1.5",
-    "--delta",
-    "0.075",
-    "--x0",
-    "10",
-    "--y0",
-    "10",
-]
+VALID_INPUTS = {
+    "alpha": 1.0,
+    "beta": 0.1,
+    "gamma": 1.5,
+    "delta": 0.075,
+    "x0": 10.0,
+    "y0": 5.0,
+    "t_end": 10.0,
+    "n_points": 101,
+}
 
 
 @given(
-    "the lotka script accepts command line arguments alpha, beta, gamma, delta, x0, y0"
+    "valid model parameters and initial prey and predator populations",
+    target_fixture="solver_inputs",
 )
-def lotka_args():
-    result = subprocess.run(
-        [sys.executable, str(SCRIPT_PATH), "--help"],
-        capture_output=True,
-        text=True,
-    )
-    assert result.returncode == 0
-    for argument in ("--alpha", "--beta", "--gamma", "--delta", "--x0", "--y0"):
-        assert argument in result.stdout
+def valid_solver_inputs():
+    return VALID_INPUTS.copy()
 
 
 @when(
-    "I run lotka.py with parameters and initial conditions", target_fixture="run_result"
+    "I solve the Lotka-Volterra equations for a requested number of time points",
+    target_fixture="solution",
 )
-def run_lotka():
-    environment = {**os.environ, "MPLBACKEND": "Agg"}
-    return subprocess.run(
-        [sys.executable, str(SCRIPT_PATH), *PARAMETERS],
-        capture_output=True,
-        text=True,
-        env=environment,
-    )
-
-
-@then("the trajectory plots are generated without an error")
-def trajectory_plots_generated(run_result):
-    assert run_result.returncode == 0, run_result.stderr
-
-
-@when("I pass no command line arguments", target_fixture="no_args_result")
-def run_lotka_no_args():
-    return subprocess.run(
-        [sys.executable, str(SCRIPT_PATH)],
-        capture_output=True,
-        text=True,
-    )
+def solve_with_valid_inputs(solver_inputs):
+    return solve_lotkavolterra(**solver_inputs)
 
 
 @then(
-    "I see an error message 'Lotka Volterra equations need parameters alpha, beta, gamma, delta and initial conditions x0, y0'"
+    "I receive one prey value and one predator value for every requested time point"
 )
-def error_message(no_args_result):
-    message = no_args_result.stderr + no_args_result.stdout
-    assert (
-        "Lotka Volterra equations need parameters alpha, beta, gamma, delta and initial conditions x0, y0"
-        in message
-    )
+def solution_contains_two_population_arrays(solution, solver_inputs):
+    assert isinstance(solution, tuple)
+    assert len(solution) == 2
+
+    prey, predators = solution
+    assert isinstance(prey, np.ndarray)
+    assert isinstance(predators, np.ndarray)
+    assert prey.shape == (solver_inputs["n_points"],)
+    assert predators.shape == (solver_inputs["n_points"],)
 
 
-@then("the program exits with an error code")
-def exit_error(no_args_result):
-    assert no_args_result.returncode != 0
+@then("the first values equal the supplied initial populations")
+def solution_starts_at_initial_populations(solution, solver_inputs):
+    prey, predators = solution
+    assert prey[0] == solver_inputs["x0"]
+    assert predators[0] == solver_inputs["y0"]
+
+
+@given(
+    "a negative model parameter or initial population",
+    target_fixture="negative_input_cases",
+)
+def negative_input_cases():
+    cases = []
+    for input_name in ("alpha", "beta", "gamma", "delta", "x0", "y0"):
+        inputs = VALID_INPUTS.copy()
+        inputs[input_name] = -1.0
+        cases.append((input_name, inputs))
+    return cases
+
+
+@when(
+    "I try to solve the Lotka-Volterra equations",
+    target_fixture="negative_input_errors",
+)
+def solve_with_negative_inputs(negative_input_cases):
+    errors = {}
+    for input_name, inputs in negative_input_cases:
+        try:
+            solve_lotkavolterra(**inputs)
+        except ValueError as error:
+            errors[input_name] = error
+    return errors
+
+
+@then("a value error is raised explaining that inputs must be non-negative")
+def all_negative_inputs_are_rejected(negative_input_cases, negative_input_errors):
+    expected_inputs = {name for name, _ in negative_input_cases}
+    assert set(negative_input_errors) == expected_inputs
+    for error in negative_input_errors.values():
+        assert "non-negative" in str(error).lower()
