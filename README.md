@@ -32,5 +32,7 @@ python -m pytest
 
 - `src/qa/lotka.py` — the Lotka–Volterra implementation to be filled in.
 - `tests/` — the exercise test suite to be filled in.
+- skills live in `.pi/skills` or the equivalent path on windows
+
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
