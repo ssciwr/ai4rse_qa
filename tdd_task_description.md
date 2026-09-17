@@ -43,14 +43,16 @@ part A):
 - try out the resulting code.
 
 part B):
+- Use a new session ideally!
 - Restart the exercise by deleting the code that just has been created
 - Let the agent plan out the **unit tests first** for the first feature. You have to come up with some function names for the different features perhaps.
-- The Lotka-volterra equations have 2 equillibrium points: (x,y) = (0, 0) and (x,y) = (gamma/delta, alpha/beta). We can use these invariants of the target system to built property tests that acertain that we actually implemented the right equation. Consider this when instructing the agent to plan the tests.
+- The Lotka-volterra equations have 2 equillibrium points: (x,y) = (0, 0) and (x,y) = (gamma/delta, alpha/beta). We can use these invariants of the target system to built property tests that acertain that we actually implemented the right equation. Take this into account in when planning tests.
 - Review the plan, refine and iterate until you are happy with the plan
 - Let the agent implement the test plan for the given feature
 - The code that these tests are for doesn't exist yet, and hence they fail. Let's make sure this is so
 - Once the test plan for a given feature is complete and reviewed, task the agent with implementing the code that fulfills these tests.
-- Review the result. Make sure the respective tests function now
+- Review the result. Make sure the respective tests function now.
+- Have the agent refactor the code until you are happy with it, using a workflow of your choice.
 - Proceed through each feature in that manner.
 
 ## Questions
