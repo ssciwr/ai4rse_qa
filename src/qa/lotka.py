@@ -151,10 +151,18 @@ def main():
         "--y0", type=float, required=True, help="Initial predator population."
     )
     parser.add_argument(
-        "--t", type=float, required=False, help="End time for the simulation."
+        "--t",
+        type=float,
+        required=False,
+        default=10.0,
+        help="End time for the simulation.",
     )
     parser.add_argument(
-        "--n", type=int, required=False, help="Number of output time points."
+        "--n",
+        type=int,
+        required=False,
+        default=100,
+        help="Number of output time points.",
     )
     args = parser.parse_args()
     t, x, y = solve_lotkavolterra(
