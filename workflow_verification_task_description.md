@@ -103,3 +103,4 @@ Put the `skills/bugfixing` directory into `.{HARNESS_NAME}/skills` in the root d
 
 ## Questions
 - think about the characteristics of AI agents. Considering those, could the trajectory workflow verification be improved?
+- if you are familiar with other testing/verification techniques, which ones would be suitable to augment workflow verification?
