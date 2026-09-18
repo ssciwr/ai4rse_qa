@@ -92,7 +92,8 @@ Put the `skills/bugfixing` directory into `.{HARNESS_NAME}/skills` in the root d
 
 ## Steps
 - read through the issue in `bug_ticket` and familiarize yourself with the code in lotka.py.
-- familiarize yourself with the example tests for test_bugfix_workflow.py. We are using the agentevals library here, and the test provides a simple example for a saved trajectory of applying the `bugfixing` skill to the bug ticket for claude, codex and pi, with claude sonnet 5, gpt5.6 and thinkingmachines/inkling-small with medium thinking level. The example traces have been obtained with the following initial prompt:
+- familiarize yourself with the example tests for test_bugfix_workflow.py. We are using the agentevals library here, and the test provides a simple example for a saved trajectory of applying the `bugfixing` skill to the bug ticket for claude, codex and pi, with claude sonnet 5 (claude), gpt5.6-Luna (codex, pi) and
+ with medium thinking level. There is an additional trace for pi with the thinkingmachines/inkling-free model. The example traces have been obtained with the following initial prompt:
 "I have a bug ticket in ./bug_ticket. apparently something with the lotka app is wrong. Please use the project local 'bugfixing' skill to fix this problem."
 
 - run the tests to see which ones work and which ones don't.
