@@ -1,4 +1,4 @@
-# Workflow verification - Example task
+# Workflow trajectory verification - Example task
 
 ## Setup
 - The definition of the differential equations to be solved is already there, see `src/qa/lotka.py`
@@ -75,7 +75,9 @@
     - automated review and correction loop
     - return report
 - Start your harness from the project root, or it won't find the skill
-- See: `.{WORKFLOW_VERIFICATION_HARNESS}/skills/bugfixing` to read what it does in ddtail.
+- See: `skills/bugfixing` to read what it does in ddtail.
+- You can install it for your own harness by making it a project-local skill:
+Put the `skills/bugfixing` directory into `.{HARNESS_NAME}/skills` in the root directory of the project for `HARNESS_NAME` in [pi, claude, codex].
 
 
 ## Goal
@@ -89,6 +91,14 @@
     - Decide on how to extend it: Statistics over multiple prompts?
 
 ## Steps
-- familiarize yourself with the skill called 'bugfixing'
-- familiarize yourself with the lotka.py code and
+- read through the issue in `bug_ticket` and familiarize yourself with the code in lotka.py.
+- familiarize yourself with the example tests for test_bugfix_workflow.py. We are using the agentevals library here, and the test provides a simple example for a saved trajectory of applying the `bugfixing` skill to the bug ticket for claude, codex and pi, with claude sonnet 5, gpt5.6 and thinkingmachines/inkling-small with medium thinking level. The example traces have been obtained with the following initial prompt:
+"I have a bug ticket in ./bug_ticket. apparently something with the lotka app is wrong. Please use the project local 'bugfixing' skill to fix this problem."
+
+- run the tests to see which ones work and which ones don't.
+- familiarize yourself with the skill 'bugfixing'
+- think about the relevant steps in the workflow. which ones are important to verify, which ones could be left out?
+- fill in the additional test with one step from the workflow that you think makes sense
+
 ## Questions
+- think about the characteristics of AI agents. Considering those, could the trajectory workflow verification be improved?

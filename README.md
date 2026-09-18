@@ -55,6 +55,3 @@ python -m pytest
 - `bug_ticket` - a fictional bug report about a defect in the `lotka` app including solutions and plots
 - `skills` - contains the skill that defines the workflow we want to verify.
 
-## Installing the supplied skill into your own harness
-You can install it for your own harness by making it a project-local skill:
-Put the `skills/bugfixing` directory into `.{HARNESS_NAME}/skills` in the root directory of the project for `HARNESS_NAME` in [pi, claude, codex].
