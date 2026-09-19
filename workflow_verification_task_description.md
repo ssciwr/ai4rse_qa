@@ -1,5 +1,16 @@
 # Workflow trajectory verification - Example task
 
+## Overview
+This example consists of 2 parts:
+
+- Deterministic workflow verification based on pre-recorded traces (see sesssion_recordings), which demonstrates how to use the openevals library to verify tool calls in a trace. It also is aimed at showing limits of this approach for complex apps like AI agents.
+- An LLM-as-a-judge approach to score success on the workflow. This accounts better for the dynamic nature of the system we are testing.
+
+## Remark
+- conceptually, we follow Anthropic's article [Demystifying evals for AI Agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
+- This branch bundles the buggy app, the workflow to be graded and the grading harness in one project for the purposes of this workshop. In a real world scenario, that might be different.
+- We are working with pre-recorded traces here. We could also record them on the fly, but for this workshop we opted to ignore this step and use the json files directly.
+
 ## Setup
 - The definition of the differential equations to be solved is already there, see `src/qa/lotka.py`
 
@@ -13,7 +24,7 @@
     - activate the venv
         - raw Python: `source .venv/bin/activate`
         - uv: `source .venv/bin/activate`
-        - PowerShell: `.\.venv\Scripts\Activate.ps1`
+        - PowerShell: `.\.venv\Scripts\Activate`
         - conda: `conda activate venv`
 
     - install the current project in 'editable' mode, together with its dependencies:
@@ -38,10 +49,6 @@
     - return report
 - See: `skills/bugfixing` to read what it does in detail.
 - You can install the skill 'bugfixes' for your agent harness (e.g., for project-local skills, copy it to .agents/skills, .claude/skills, .codex/skills), and run it yourself to find get a feel for how it works.
-
-## Remark
-- conceptually, we follow Anthropic's article [Demystifying evals for AI Agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
-- This branch bundles the buggy app, the workflow to be graded and the grading harness in one project for the purposes of this workshop, which of course normally is not the case.
 
 
 ## Goal
