@@ -8,7 +8,7 @@ from agentevals.trajectory.match import create_trajectory_match_evaluator
 
 from eval.trajectory_parser import TrajectoryParser
 
-RECORDINGS = Path(__file__).parent / "sesssion_recordings"
+RECORDINGS = Path(__file__).parents[1] / "sesssion_recordings"
 
 
 def parse_records(tmp_path, harness, *records):
