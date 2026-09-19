@@ -1,4 +1,4 @@
-"""Convert coding-agent JSONL recordings to AgentEvals message dictionaries.
+"""Normalize coding-agent JSONL recordings for OpenEvals.
 
 Preserve native tool names and inputs; do not infer actions from shell commands.
 Session bookkeeping and internal reasoning are excluded from the trajectory.
@@ -70,7 +70,7 @@ class TrajectoryParser:
         *,
         harness: Literal["pi", "claude", "codex"],
     ) -> list[dict]:
-        """Convert a recording into messages accepted by AgentEvals.
+        """Convert a recording into messages accepted by OpenEvals.
 
         Args:
             path: UTF-8 JSONL recording, with one object per nonblank line.
