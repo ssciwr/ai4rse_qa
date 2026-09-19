@@ -40,8 +40,11 @@
 - You can install the skill 'bugfixes' for your agent harness (e.g., for project-local skills, copy it to .agents/skills, .claude/skills, .codex/skills), and run it yourself to find get a feel for how it works.
 
 ## Remark
-This branch bundles the buggy app and the workflow in one project for the purposes of this workshop, which of course normally is not the case.
+- conceptually, we follow Anthropic's article [Demystifying evals for AI Agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
+- This branch bundles the buggy app, the workflow to be graded and the grading harness in one project for the purposes of this workshop, which of course normally is not the case.
 - Since the `agentevals` library needs OpenAI-style messages, we need a small parser to parse the trajectories into the right format. This is implemented in `src/eval/trajectory_parser.py`.
+
+
 ## Goal
 Extend a verifier for a select few steps of single run of the workflow, e.g.:
     - verifies that the agent added a regression test that fails initially
