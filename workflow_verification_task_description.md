@@ -42,20 +42,19 @@
 ## Remark
 - conceptually, we follow Anthropic's article [Demystifying evals for AI Agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
 - This branch bundles the buggy app, the workflow to be graded and the grading harness in one project for the purposes of this workshop, which of course normally is not the case.
-- Since the `agentevals` library needs OpenAI-style messages, we need a small parser to parse the trajectories into the right format. This is implemented in `src/eval/trajectory_parser.py`.
 
 
 ## Goal
 Extend a verifier for a select few steps of single run of the workflow, e.g.:
     - verifies that the agent added a regression test that fails initially
     - verifies that the agent wrote the plan
-- Tool: langchain agenteval, already installed. The tool's repository is here: https://github.com/langchain-ai/agentevals
+- Tool: LangChain OpenEvals, already installed. The tool's repository is here: https://github.com/langchain-ai/openevals
 
 ## Steps
 - read through the issue in `bug_ticket` and familiarize yourself with the code in lotka.py.
 - familiarize yourself with the example tests for test_bugfix_workflow.py.
 - OPTIONAL: install the skill and run it to observer how it works
-- We are using the agentevals library here, and the test provides a simple example for a saved trajectory of applying the `bugfixing` skill to the bug ticket for claude, codex and pi, with claude sonnet 5 (claude), gpt5.6-Luna (codex, pi) and
+- We are using the OpenEvals library here, and the test provides a simple example for a saved trajectory of applying the `bugfixing` skill to the bug ticket for claude, codex and pi, with claude sonnet 5 (claude), gpt5.6-Luna (codex, pi) and
  with medium thinking level. There is an additional trace for pi with the thinkingmachines/inkling-free model. The example traces have been obtained with the following initial prompt:
 "I have a bug ticket in ./bug_ticket. apparently something with the lotka app is wrong. Please use the project local 'bugfixing' skill to fix this problem."
 Each trace contains one json object representing one interaction step per line.
@@ -65,4 +64,5 @@ Each trace contains one json object representing one interaction step per line.
 
 ## Questions
 - think about the characteristics of AI agents. Considering those, could the trajectory workflow verification be improved?
+- what does a passing workflow verification test establish, and what does it not establish? What are weaknesses in this workflow?
 - if you are familiar with other testing/verification techniques, which ones would be suitable to augment workflow verification?
