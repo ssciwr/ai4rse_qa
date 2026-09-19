@@ -26,8 +26,10 @@ SOURCECODE_REFERENCE_OUTPUTS = {
                     "id": "source",
                     "type": "function",
                     "function": {
-                        "name": "read",
-                        "arguments": json.dumps({"path": "src/qa/lotka.py"}),
+                        "name": """TODO: WHAT SHOULD GO HERE?""",
+                        "arguments": json.dumps(
+                            {"path": """TODO: WHAT SHOULD GO HERE?"""}
+                        ),
                     },
                 }
             ],
@@ -43,7 +45,9 @@ SOURCECODE_REFERENCE_OUTPUTS = {
                     "type": "function",
                     "function": {
                         "name": "Bash",
-                        "arguments": json.dumps({"command": "src/qa/lotka.py"}),
+                        "arguments": json.dumps(
+                            {"command": """TODO: WHAT SHOULD GO HERE?"""}
+                        ),
                     },
                 }
             ],
@@ -59,7 +63,9 @@ SOURCECODE_REFERENCE_OUTPUTS = {
                     "type": "function",
                     "function": {
                         "name": "exec",
-                        "arguments": json.dumps({"input": "src/qa/lotka.py"}),
+                        "arguments": json.dumps(
+                            {"input": """TODO: WHAT SHOULD GO HERE?"""}
+                        ),
                     },
                 }
             ],
@@ -72,21 +78,8 @@ SOURCECODE_REFERENCE_OUTPUTS = {
 def test_trajectory_reads_sourcecode(path, harness):
     trajectory = TrajectoryParser().parse(path, harness=harness)
     reference = SOURCECODE_REFERENCE_OUTPUTS[harness]
-    evaluator = create_trajectory_match_evaluator(
-        trajectory_match_mode="superset",
-        tool_args_match_overrides={
-            "read": ToolArgsMatcher(
-                lambda out, ref: ref["path"] in out.get("path", "")
-            ),
-            "Bash": ToolArgsMatcher(
-                lambda out, ref: ref["command"] in out.get("command", "")
-            ),
-            "exec": ToolArgsMatcher(
-                lambda out, ref: ref["input"] in out.get("input", "")
-            ),
-        },
-    )
+    evaluator = create_trajectory_match_evaluator("""TODO: WHAT SHOULD GO HERE?""")
 
     result = evaluator(outputs=trajectory, reference_outputs=reference)
-
+    print(result)
     assert result["score"]

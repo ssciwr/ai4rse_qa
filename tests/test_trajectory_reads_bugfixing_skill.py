@@ -97,5 +97,6 @@ def test_trajectory_reads_bugfixing_skill(path, harness):
         pytest.fail(
             f"Expected evaluator result to be a dict, got {type(result).__name__}"
         )
+    print(result)
 
     assert result["score"]

@@ -102,11 +102,12 @@ This example consists of 2 parts. They don't built on each other, so you can swi
 "I have a bug ticket in ./bug_ticket. apparently something with the lotka app is wrong. Please use the project local 'bugfixing' skill to fix this problem."
 Each trace contains one json object representing one interaction step per line.
 - think about the relevant steps in the 'bugfixing' workflow. Which ones are important to verify, which ones could be left out?
-- there are three existing test files for trajectory tests:
+- there are two relevant existing test files for trajectory tests:
     - `test_trajectory_reads_bugfixing_skill.py`
-    - `test_trajectory_reads_writes_plan.py`
     - `test_trajectory_reads_sourcecode.py`. This one is incomplete.
-- fill in the test `test_trajectory_reads_sourcecode` according to the patter in the other two.
+- fill in the test `test_trajectory_reads_sourcecode` according to the pattern in `test_trajectory_reads_bugfixing_skill`.
+Use your coding agent to work through this. Explain what it is planning, why, and what the changes it plans mean if you are not familiar with
+what should happen.
 - What about the human approval for the plan? how would you implement a test that asserts that this has been part of the workflow at the appropriate step?
 - observe what these tests actually establish. What should they establish? What could you do to improve their power? Work with your coding agents through this question, and try to improve the tests or understand alternatives.
 - think about the invariants that the `bugfixing` workflow has. How could we test that they are adhered to?
