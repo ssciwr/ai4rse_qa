@@ -4,9 +4,9 @@ import json
 from pathlib import Path
 
 import pytest
-from agentevals.trajectory.match import create_trajectory_match_evaluator
+from openevals import create_trajectory_match_evaluator
 
-from eval.trajectory_parser import TrajectoryParser
+from eval_harness.trajectory_parser import TrajectoryParser
 
 RECORDINGS = Path(__file__).parents[1] / "sesssion_recordings"
 
@@ -39,7 +39,7 @@ def test_recording_tool_calls(harness, filename, count):
 
 
 @pytest.mark.parametrize("harness", ["pi", "claude", "codex"])
-def test_agentevals_accepts_recording(harness):
+def test_openevals_accepts_recording(harness):
     filename = "trace_inkling.jsonl" if harness == "pi" else "trace.jsonl"
     messages = TrajectoryParser().parse(
         RECORDINGS / harness / filename, harness=harness
