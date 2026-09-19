@@ -9,6 +9,12 @@ from agentevals.trajectory.match import create_trajectory_match_evaluator
 from eval.trajectory_parser import TrajectoryParser
 
 RECORDINGS = Path(__file__).parents[1] / "sesssion_recordings"
+CASES = [
+    (RECORDINGS / "pi" / "trace_gptluna.jsonl", "pi"),
+    (RECORDINGS / "pi" / "trace_inkling.jsonl", "pi"),
+    (RECORDINGS / "claude" / "trace.jsonl", "claude"),
+    (RECORDINGS / "codex" / "trace.jsonl", "codex"),
+]
 
 
 # little helper to build the reference trajectory steps.
@@ -38,55 +44,31 @@ BUGFIX_REFERENCE_OUTPUTS = [
 ]
 
 
-# TODO: this is dogshit crap!
-def _matches_bash_step(actual, reference):
-    command = actual.get("command", "")
-
-    # this is far too specific! not useful!
-    required_fragments = {
-        "regression_test_red": ("tests/test_lotka.py", "open(p,'w').write", "pytest"),
-        "plan_written": ("cat > bugfix-plan.md",),
-        "verification": ("uv run --extra tests pytest", "--cov-branch"),
-    }.get(reference.get("workflow_step"))
-    return required_fragments is not None and all(
-        fragment in command for fragment in required_fragments
-    )
+@pytest.fixture(scope="class", params=CASES)
+def read_trajectory(request):
+    path, harness = request.param
+    return TrajectoryParser().parse(path, harness=harness)
 
 
-def _matches_implementation(actual, reference):
-    return (
-        reference.get("workflow_step") == "implementation"
-        and actual.get("file_path", "").endswith("src/qa/lotka.py")
-        and actual.get("new_string") == "delta=args.delta,"
-    )
+class TestBugfixesWorkflow:
+    def test_trajectory_reads_bugfixes_skill(self, read_trajectory):
 
+        for line in read_trajectory:
+            print(line)
+        assert 3 == 5
 
-@pytest.mark.parametrize(
-    "trajectory,harness",
-    [
-        (RECORDINGS / "pi" / "trace_gptluna.jsonl", "pi"),
-        (RECORDINGS / "pi" / "trace_inkling.jsonl", "pi"),
-        (RECORDINGS / "claude" / "trace.jsonl", "claude"),
-        (RECORDINGS / "codex" / "trace.jsonl", "codex"),
-    ],
-)
-def test_trajectory_contains_required_bugfix_calls(trajectory, harness):
-    trajectory = TrajectoryParser().parse(trajectory, harness=harness)
-    evaluate = create_trajectory_match_evaluator(
-        trajectory_match_mode="superset",
-        tool_args_match_overrides={
-            "Bash": _matches_bash_step,
-            "Edit": _matches_implementation,
-        },
-    )
+    def test_trajectory_reads_sourcecode(self, read_trajectory):
+        assert 3 == 5
 
-    result = evaluate(
-        outputs=trajectory,
-        reference_outputs=BUGFIX_REFERENCE_OUTPUTS,
-    )
+    def test_trajectory_writes_plan(self, read_trajectory):
+        assert 3 == 5
 
-    assert result["score"] is True
+    def test_trajectory_writes_regression_test(self, read_trajectory):
+        assert 3 == 5
 
+    # test invariants
+    def test_trajectory_adheres_to_human_gate(self, read_trajectory):
+        assert 3 == 5
 
-# TODO: add test for invariants of the workflow
-# TODO:
+    def test_trajectory_does_not_change_lib_code_before_approval(self, read_trajectory):
+        assert 3 == 5
