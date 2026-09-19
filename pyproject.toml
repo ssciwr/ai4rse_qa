@@ -14,30 +14,20 @@ description = "An excercise project for the ai4rse 2026 workshop"
 readme = "README.md"
 maintainers = [
     { name = "Harald Mack", email = "harald.mack@iwr.uni-heidelberg.de" },
+    { name = "Tuyen Kim Le", email = "tuyen.le@iwr.uni-heidelberg.de" },
 ]
 version = "0.0.1"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 license-files = ["LICEN[CS]E*"]
 license = "MIT"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
-dependencies = [
-    "matplotlib>=3.10.9",
-    "numpy>=2.2.6",
-    "pyyaml>=6.0.3",
-    "scipy>=1.15.3",
-]
+dependencies = ["matplotlib", "numpy", "pyyaml", "scipy"]
 
 [project.optional-dependencies]
-tests = [
-    "pytest",
-    "pytest-cov",
-    "pytest-bdd",
-    "agentevals>=0.0.9",
-    "openevals>=0.2.0",
-]
+tests = ["pytest", "pytest-cov", "pytest-bdd", "openevals", "deepeval"]
 
 [project.scripts]
 lotka = "qa.lotka:main"
