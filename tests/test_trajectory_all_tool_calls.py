@@ -1,9 +1,9 @@
-from collections.abc import Callable
 from pathlib import Path
 
 import pytest
 from openevals import create_trajectory_match_evaluator
 
+from eval_harness.tools_args_matcher import ToolArgsMatcher
 from eval_harness.trajectory_parser import TrajectoryParser
 from tests.test_trajectory_reads_bugfixing_skill import BUGFIX_REFERENCE_OUTPUTS
 from tests.test_trajectory_reads_sourcecode import SOURCECODE_REFERENCE_OUTPUTS
@@ -20,14 +20,6 @@ CASES = [
     (RECORDINGS / "claude" / "trace.jsonl", "claude"),
     (RECORDINGS / "codex" / "trace.jsonl", "codex"),
 ]
-
-
-class ToolArgsMatcher:
-    def __init__(self, function: Callable[[dict, dict], bool]):
-        self.function = function
-
-    def __call__(self, output, reference_pattern):
-        return self.function(output, reference_pattern)
 
 
 @pytest.mark.parametrize("path,harness", CASES)

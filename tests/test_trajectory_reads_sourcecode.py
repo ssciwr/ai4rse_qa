@@ -1,10 +1,10 @@
 import json
-from collections.abc import Callable
 from pathlib import Path
 
 import pytest
 from openevals import create_trajectory_match_evaluator
 
+from eval_harness.tools_args_matcher import ToolArgsMatcher
 from eval_harness.trajectory_parser import TrajectoryParser
 
 
@@ -66,14 +66,6 @@ SOURCECODE_REFERENCE_OUTPUTS = {
         }
     ],
 }
-
-
-class ToolArgsMatcher:
-    def __init__(self, function: Callable[[dict, dict], bool]):
-        self.function = function
-
-    def __call__(self, output, reference_pattern):
-        return self.function(output, reference_pattern)
 
 
 @pytest.mark.parametrize("path,harness", CASES)
