@@ -31,7 +31,13 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-tests = ["pytest", "pytest-cov", "pytest-bdd", "agentevals>=0.0.9"]
+tests = [
+    "pytest",
+    "pytest-cov",
+    "pytest-bdd",
+    "agentevals>=0.0.9",
+    "openevals>=0.2.0",
+]
 
 [project.scripts]
 lotka = "qa.lotka:main"
