@@ -137,3 +137,10 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+
+#
+.pi
+.agents
+.claude
+.codex
