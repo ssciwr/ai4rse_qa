@@ -1,0 +1,53 @@
+# This section describes the requirements of the build/installation
+# process itself. Being able to do this was the original reason to
+# introduce pyproject.toml
+[build-system]
+requires = ["setuptools >=61"]
+build-backend = "setuptools.build_meta"
+
+# This section provides general project metadata that is used across
+# a variety of build tools. Notably, the version specified here is the
+# single source of truth for your_project's version
+[project]
+name = "qa"
+description = "An excercise project for the ai4rse 2026 workshop"
+readme = "README.md"
+maintainers = [
+    { name = "Harald Mack", email = "harald.mack@iwr.uni-heidelberg.de" },
+    { name = "Tuyen Kim Le", email = "tuyen.le@iwr.uni-heidelberg.de" },
+]
+version = "0.0.1"
+requires-python = ">=3.12"
+license-files = ["LICEN[CS]E*"]
+license = "MIT"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = ["matplotlib", "numpy", "pyyaml", "scipy"]
+
+[project.optional-dependencies]
+tests = [
+    "pytest",
+    "pytest-cov",
+    "pytest-bdd",
+    "openevals",
+    "deepeval",
+    "langchain-anthropic>=1.7.2",
+]
+
+[project.scripts]
+lotka = "qa.lotka:main"
+
+
+# The following section contains setuptools-specific configuration
+# options. For a full reference of available options, check the overview
+# at https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# The following is the configuration for the pytest test suite
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-rA"
