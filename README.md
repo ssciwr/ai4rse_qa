@@ -1,3 +1,5 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # AI4RSE 2026 Quality-Assurance Workshop
 
 This repository contains the exercise project for the AI4RSE 2026 workshop on quality assurance. It uses a small implementation of the Lotka–Volterra predator–prey model as the example application and focuses on building verification machinery with test-driven development (TDD) and behaviour-driven development (BDD).
@@ -16,8 +18,12 @@ where $$x$$ and $$y$$ are the two population sizes and $$\alpha$$, $$\beta$$,  $
 
 ## Workshop branches
 
-- `tdd-bdd` contain the exercise material.
-- `tdd-bdd-sol` contains the corresponding solutions.
+- `tdd` contain the material for the test driven development example.
+- `tdd-sol` contains the corresponding solutions.
+- `bdd` contain the material for the test driven development example.
+- `bdd-sol` contains the corresponding solutions.
+- `skill-verification` contain the material for the test driven development example.
+- `skill-verification-sol` contains the corresponding solutions.
 
 ## Run the tests
 
@@ -33,4 +39,3 @@ python -m pytest
 - `src/qa/lotka.py` — the Lotka–Volterra implementation to be filled in.
 - `tests/` — the exercise test suite to be filled in.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
