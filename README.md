@@ -37,5 +37,5 @@ python -m pytest
 ## Project layout
 
 - `src/qa/lotka.py` — the Lotka–Volterra implementation to be filled in.
-- `tests/` — the exercise test suite to be filled in.
+- `tests/` — the test suite.
 
