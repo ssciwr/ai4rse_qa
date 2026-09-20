@@ -1,23 +1,44 @@
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # AI4RSE 2026 Quality-Assurance Workshop
 
-This repository contains the exercise project for the AI4RSE 2026 workshop on quality assurance. It uses a small implementation of the Lotka–Volterra predator–prey model as the example application and focuses on building verification machinery with test-driven development (TDD) and behaviour-driven development (BDD).
+This repository contains the exercise project for the AI4RSE 2026 workshop on quality assurance. It uses a small app that solves and visualizes the Lotka–Volterra predator–prey model as the example application.
 
 ## The model
 
-The model's right-hand side is
+The Lotka-Volterra model is:
 
-```math
+$$
 \frac{dx}{dt} = \alpha x - \beta xy
 \qquad
 \frac{dy}{dt} = \delta xy - \gamma y
-```
+$$
 
-where $$x$$ and $$y$$ are the two population sizes and $$\alpha$$, $$\beta$$,  $$\gamma$$ and $$\delta$$ are model parameters.
+where $x$ and $y$ are the two population sizes and $\alpha$, $\beta$,  $\gamma$ and $\delta$ are model parameters.
+
+- $x$: Prey population size
+- $y$: Predator population size
+- $\alpha$: Prey population growth rate.
+- $\beta$: Predation parameter of prey
+- $\delta$: Predator population growth parameter. Growth rate is $\delta$ x, i.e. is proportional to the current prey population.
+- $\gamma$: Death rate of predator
+
+Starting parameters and initial conditions to get started could be:
+- $x$: 0.1
+- $y$: 0.2
+- $\alpha$: 1.0
+- $\beta$: 0.1
+- $\delta$: 0.075
+- $\gamma$: 1.5
 
 ## Workshop branches
 
-- `tdd-bdd` contain the exercise material.
-- `tdd-bdd-sol` contains the corresponding solutions.
+- `tdd` contains the exercise material for the test driven development task
+- `bdd` contains the exercise material for the behavior driven development task
+- `skill-verification` contains the exercise material for the workflow verification task
+
+Every branch has a corresponding *name*_sol branch that contains possible solutions for each task.
 
 ## Run the tests
 
@@ -31,6 +52,7 @@ python -m pytest
 ## Project layout
 
 - `src/qa/lotka.py` — the Lotka–Volterra implementation to be filled in.
-- `tests/` — the exercise test suite to be filled in.
+- `src/eval_harness.py` - code used for skill evaluation example.
+- `bug_ticket` - a fictional bug report about a defect in the `lotka` app including solutions and plots
+- `skills` - contains the skill that defines the workflow we want to verify.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
