@@ -52,7 +52,4 @@ python -m pytest
 ## Project layout
 
 - `src/qa/lotka.py` — the Lotka–Volterra implementation to be filled in.
-- `src/eval_harness.py` - code used for skill evaluation example.
-- `bug_ticket` - a fictional bug report about a defect in the `lotka` app including solutions and plots
-- `skills` - contains the skill that defines the workflow we want to verify.
-
+- `tests` - the corresponding test suite (to be filled in)
