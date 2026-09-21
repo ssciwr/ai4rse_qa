@@ -1,10 +1,11 @@
 # Workflow trajectory verification - Example task
 
 ## Overview
-This example consists of 2 parts. They don't built on each other, so you can switch between them as you want.
+This example consists of 2 parts. They don't built on each other, so you can switch between them as you want. However, it makes sense to at least read through the 'Steps' section of part 1 first before you move on to part 2.
 
-- Deterministic workflow verification based on pre-recorded traces (see sesssion_recordings), which demonstrates how to use the `openevals` library to verify tool calls in a trace. It also is designed to show limits of this approach for complex apps like AI agents.
-- An LLM-as-a-judge approach to score success on the recorded trajectories, using the `openevals` library.
+Part 1: Deterministic workflow verification based on pre-recorded traces (see sesssion_recordings), which demonstrates how to use the `openevals` library to verify tool calls in a trace. It also is designed to show limits of this approach for complex apps like AI agents.
+
+Part 2: An LLM-as-a-judge approach to score success on the recorded trajectories, using the `openevals` library.
 
 ## Remarks
 - Conceptually, we follow Anthropic's article [Demystifying evals for AI Agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
@@ -82,53 +83,60 @@ This example consists of 2 parts. They don't built on each other, so you can swi
             ```
     - the judge model must support structured output (JSON schema or tool calling). If a model fails with a response format or tool calling error, try a different one.
 
+## Goal:
+- try out a library for verifying agent trajectories.
+- try out a deterministic and an llm-based approach
+- find out limits of deterministic verification and llm-based verification
+
+## Background
 - We are using a skill that defines a workflow for bugfixing:
     - reproduce bug
     - add regression test
-    - plan out fix and write to file
-    - hand over for review
-    - implement
-    - automated review and correction loop
-    - return report
+    - plan out fix and write the plan to a file
+    - hand the file over for human review and wait for approval
+    - implement fix
+    - automated review and correction loop: have a reviewer look over fix and hand back remaining issues. Can repeat up to 4 times.
+    - return report of what has been done when finished.
 - See: `skills/bugfixing` to read what it does in detail.
-- You can install the skill 'bugfixes' for your agent harness (e.g., for project-local skills, copy it to .agents/skills, .claude/skills, .codex/skills), and run it yourself to find get a feel for how it works.
+- You can install the skill 'bugfixes' for your agent harness (e.g., for project-local skills, copy it to .agents/skills, .claude/skills, .codex/skills), and run it yourself to find and fix the bug in the 'lotka' library and get a feel for how it works.
+- Four trajectory records of applying this skill to the (buggy) 'lotka' library are provided, so we don't have to deal with building or setting up
+a full evaluation harness. One record for claude and codex each, two for pi with different models.
+- The example traces have been obtained with the following initial prompt:
+"I have a bug ticket in ./bug_ticket. apparently something with the lotka app is wrong. Please use the project local 'bugfixing' skill to fix this problem."
+- Each trace contains one json object representing one interaction step per line. They have been obtained with claude sonnet 5 (claude), gpt5.6-Luna (codex, pi) and inkling (pi only), with medium thinking level each.
 
 ## Steps - Part 1
 - We are using the OpenEvals library in this example, and have some prerecorded examples for a saved trajectory of applying the `bugfixing` skill to the bug ticket for claude, codex and pi, with claude sonnet 5 (claude), gpt5.6-Luna (codex, pi) and inkling (pi only).
 - Have a look at the skill in `skills/bugfixing/SKILL.md` to see what the workflow is that it defines.
 - read through the issue in `bug_ticket`. The code this talks about is in `src/qa/lotka.py`.
-- OPTIONAL: install the skill and apply it to the `bug_ticket` to observer how it works
- with medium thinking level. There is an additional trace for pi with the thinkingmachines/inkling-free model. The example traces have been obtained with the following initial prompt:
-"I have a bug ticket in ./bug_ticket. apparently something with the lotka app is wrong. Please use the project local 'bugfixing' skill to fix this problem."
-Each trace contains one json object representing one interaction step per line.
-- think about the relevant steps in the 'bugfixing' workflow. Which ones are important to verify, which ones could be left out?
-- there are three existing test files for trajectory tests:
+- OPTIONAL: install the skill and apply it to the `bug_ticket` to observe how it works (and if).
+- think about the relevant steps in the 'bugfixing' workflow. Which ones are important to verify, which ones could be left out? Compare to the two files:
     - `test_trajectory_reads_bugfixing_skill.py`
-    - `test_trajectory_reads_writes_plan.py`
     - `test_trajectory_reads_sourcecode.py`. This one is incomplete.
-- fill in the test `test_trajectory_reads_sourcecode` according to the patter in the other two.
-- What about the human approval for the plan? how would you implement a test that asserts that this has been part of the workflow at the appropriate step?
-- observe what these tests actually establish. What should they establish? What could you do to improve their power? Work with your coding agents through this question, and try to improve the tests or understand alternatives.
-- think about the invariants that the `bugfixing` workflow has. How could we test that they are adhered to?
+- fill in the test `test_trajectory_reads_sourcecode` according to the pattern in `test_trajectory_reads_bugfixing_skill`.
+Use your coding agent to work through this if you want. Have it explain what it is planning, why, and what the changes it plans means.
+- Make sure you understand what is being verified here with respect to the task.
+- What about the human approval gate for the plan? how would you implement a test that asserts that this has been part of the workflow at the appropriate step? How practical is that?
+- What should a verification workflow establish?
+- What could you do to improve the effectiveness of the current one?
+- Think about the invariants of the `bugfixing` workflow. How could we test that they are adhered to?
 
 ## Steps - Part 2
-- We are using the OpenEvals library in this example, and have some prerecorded examples for a saved trajectory of applying the `bugfixing` skill to the bug ticket for claude, codex and pi, with claude sonnet 5 (claude), gpt5.6-Luna (codex, pi) and inkling (pi only).
-- Have a look at the skill in `skills/bugfixing/SKILL.md` to see what the workflow is that it defines.
-- read through the issue in `bug_ticket`. The code this talks about is in `src/qa/lotka.py`.
-- OPTIONAL: install the skill and apply it to the `bug_ticket` to observer how it works
- with medium thinking level. There is an additional trace for pi with the thinkingmachines/inkling-free model. The example traces have been obtained with the following initial prompt:
-"I have a bug ticket in ./bug_ticket. apparently something with the lotka app is wrong. Please use the project local 'bugfixing' skill to fix this problem."
-Each trace contains one json object representing one interaction step per line.
-- consider `tests/test_bugfix_workflow_llmjudge.py`. This implements a simple
-llm_as_a_judge test that uses an llm to judge the workflows and grade them between 0.0 and 1.0 on their adherence to the plan as described in the `bugfixing` skill.
-configure your .env file and make sure this runs
-- play with different models. What changes?
-- the given prompt is a copy of openeval's [PLAN_ADHERENCE_PROMPT](https://github.com/langchain-ai/openevals/blob/main/python/openevals/prompts/quality/plan_adherence.py).
-Check their content and investigate the judges adherence to it.
-- Try to use other prompts that test other things, e.g., [TRAJECTORY_ACCURACY_PROMPT](https://github.com/langchain-ai/openevals/blob/main/python/openevals/prompts/trajectory/accuracy.py)
-- Try changing that prompt a bit and observe the effects.
+- We are using the OpenEvals library for this second step again, but this time with an llm-as-a-judge evaluator.
+- some prerecorded examples for a saved trajectory of applying the `bugfixing` skill to the bug ticket for claude, codex and pi, with claude sonnet 5 (claude), gpt5.6-Luna (codex, pi) and inkling (pi only).
+- If not done already: Have a look at the skill in `skills/bugfixing/SKILL.md` to see what the workflow is that it defines.
+- If not done already: read through the issue in `bug_ticket`. The code this talks about is in `src/qa/lotka.py`.
+- If not done already: OPTIONAL: install the skill and apply it to the `bug_ticket` to observer how it works.
+- Configure your .env file as descibed above.
+- Consider `tests/test_bugfix_workflow_llmjudge.py`. This implements a simple
+llm_as_a_judge test that uses an llm to judge the workflows and grade them, using a numeric scale, on their adherence to the plan as described in the `bugfixing` skill.
+- Play with different models by changing the MODEL entry in your env file. What changes?
+- The given prompt is a copy of openeval's [PLAN_ADHERENCE_PROMPT](https://github.com/langchain-ai/openevals/blob/main/python/openevals/prompts/quality/plan_adherence.py). Check the content of the given evaluation prompt and investigate how well the judge adherences to it.
+- Try changing that prompt and observe the effects. What parts are missing? Would make a good judge?
+- The prompt determines the evaluation, e.g, plan adherence, trajectory efficiency and so on.  Try to use other prompts that test other things, e.g., [TRAJECTORY_ACCURACY_PROMPT](https://github.com/langchain-ai/openevals/blob/main/python/openevals/prompts/trajectory/accuracy.py). Some need a reference trajectory, for which we can use one of the given ones.
 
 
 ## Questions
-- when is deterministic vs LLMs-based evaluation appropriate?
-- which inherent LLM properties influence the judge and how could they be mitigated?
+- When is deterministic vs LLMs-based evaluation appropriate?
+- Which inherent LLM properties influence the judge and how could the arising issues be mitigated?
+- What perparations are needed to make an LLM-as-a-judge reliable? (We don't have all of them here)
