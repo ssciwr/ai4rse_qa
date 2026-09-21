@@ -30,6 +30,9 @@ dependencies = [
     "scipy>=1.15.3",
 ]
 
+[project.scripts]
+lotka = "qa.lotka:main"
+
 [project.optional-dependencies]
 tests = ["pytest", "pytest-cov", " pytest-bdd"]
 

@@ -1,6 +1,15 @@
+import os
+import subprocess
+import sys
+
+import matplotlib
+
+matplotlib.use("Agg")
+
 import numpy as np
 import pytest
 
+import qa.lotka as lotka
 from qa.lotka import solve_lotkavolterra
 
 
@@ -119,3 +128,128 @@ def test_positive_populations_remain_finite_and_nonnegative():
     assert np.isfinite(y).all()
     assert (x >= 0.0).all()
     assert (y >= 0.0).all()
+
+
+def test_plot_trajectories_writes_nonempty_pdf(tmp_path):
+    t = np.linspace(0.0, 1.0, 5)
+    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+    y = np.array([5.0, 4.0, 3.0, 2.0, 1.0])
+    output = tmp_path / "trajectories.pdf"
+
+    lotka.plot_trajectories(t, x, y, output)
+
+    assert output.is_file()
+    assert output.stat().st_size > 0
+    assert output.read_bytes().startswith(b"%PDF")
+
+
+def test_plot_phase_writes_nonempty_pdf(tmp_path):
+    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+    y = np.array([5.0, 4.0, 3.0, 2.0, 1.0])
+    output = tmp_path / "phase.pdf"
+
+    lotka.plot_phase(x, y, output)
+
+    assert output.is_file()
+    assert output.stat().st_size > 0
+    assert output.read_bytes().startswith(b"%PDF")
+
+
+def test_plot_trajectories_contains_x_and_y_lines(tmp_path):
+    t = np.linspace(0.0, 1.0, 5)
+    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+    y = np.array([5.0, 4.0, 3.0, 2.0, 1.0])
+
+    fig, ax = lotka.plot_trajectories(t, x, y, tmp_path / "trajectories.pdf")
+
+    assert len(ax.lines) == 2
+    np.testing.assert_allclose(ax.lines[0].get_xdata(), t)
+    np.testing.assert_allclose(ax.lines[0].get_ydata(), x)
+    np.testing.assert_allclose(ax.lines[1].get_xdata(), t)
+    np.testing.assert_allclose(ax.lines[1].get_ydata(), y)
+
+
+def test_plot_phase_contains_y_as_function_of_x(tmp_path):
+    x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+    y = np.array([5.0, 4.0, 3.0, 2.0, 1.0])
+
+    fig, ax = lotka.plot_phase(x, y, tmp_path / "phase.pdf")
+
+    assert len(ax.lines) == 1
+    np.testing.assert_allclose(ax.lines[0].get_xdata(), x)
+    np.testing.assert_allclose(ax.lines[0].get_ydata(), y)
+
+
+def run_lotka_cli(*args):
+    """Run the module exactly as a user would from a terminal."""
+    return subprocess.run(
+        [sys.executable, "-m", "qa.lotka", *args],
+        capture_output=True,
+        text=True,
+        check=False,
+        env={**os.environ, "MPLBACKEND": "Agg"},
+    )
+
+
+def test_cli_writes_expected_pdf_plots_to_calling_directory(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+
+    result = run_lotka_cli(
+        "--x0", "10", "--y0", "5", "--t", "5", "--n", "50",
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert (tmp_path / "lotka_trajectories.pdf").is_file()
+    assert (tmp_path / "lotka_phase.pdf").is_file()
+
+
+def test_cli_plot_outputs_are_nonempty_pdfs(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+
+    result = run_lotka_cli(
+        "--x0", "10", "--y0", "5", "--t", "5", "--n", "50",
+    )
+
+    assert result.returncode == 0, result.stderr
+    for filename in ["lotka_trajectories.pdf", "lotka_phase.pdf"]:
+        pdf = tmp_path / filename
+        assert pdf.stat().st_size > 0
+        assert pdf.read_bytes().startswith(b"%PDF")
+
+
+def test_cli_accepts_explicit_parameters_and_initial_conditions():
+    result = run_lotka_cli(
+        "--a", "3.0", "--b", "2.0", "--c", "1.0", "--d", "0.4",
+        "--x0", ".03", "--y0", "0.5", "--t", "100", "--n", "10",
+    )
+
+    assert result.returncode == 0, result.stderr
+
+
+def test_cli_uses_defaults_when_no_options_are_given():
+    result = run_lotka_cli()
+
+    assert result.returncode == 0, result.stderr
+
+
+@pytest.mark.parametrize(
+    "argv",
+    [
+        ("--a", "not-a-number"),
+        ("--n", "0"),
+        ("--n", "-2"),
+        ("--t", "-1"),
+    ],
+)
+def test_cli_rejects_invalid_numeric_inputs(argv):
+    result = run_lotka_cli(*argv)
+
+    assert result.returncode == 2
+
+
+def test_cli_help_lists_all_supported_options():
+    result = run_lotka_cli("--help")
+
+    assert result.returncode == 0
+    for option in ("--a", "--b", "--c", "--d", "--x0", "--y0", "--t", "--n"):
+        assert option in result.stdout
