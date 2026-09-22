@@ -3,14 +3,14 @@
 ## Overview
 This example consists of 2 parts. They don't built on each other, so you can switch between them as you want. However, it makes sense to at least read through the 'Steps' section of part 1 first before you move on to part 2.
 
-Part 1: Deterministic workflow verification based on pre-recorded traces (see sesssion_recordings), which demonstrates how to use the `openevals` library to verify tool calls in a trace. It also is designed to show limits of this approach for complex apps like AI agents.
+Part 1: Deterministic workflow verification based on pre-recorded agent traces (see sesssion_recordings), which demonstrates how to use the `openevals` library to verify tool calls in a trace. It also is designed to work out limits of this approach for complex apps like AI agents.
 
-Part 2: An LLM-as-a-judge approach to score success on the recorded trajectories, using the `openevals` library.
+Part 2: An LLM-as-a-judge approach to score success on the recorded trajectories, using the `openevals` library. This scores the entire trace in one go, but comes with LLM associated drawbacks.
 
 ## Remarks
-- Conceptually, we follow Anthropic's article [Demystifying evals for AI Agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents)
-- This branch bundles the buggy app, the workflow to be graded and the grading harness in one project for the purposes of this workshop. In a real world scenario, that might be different.
-- We are working with pre-recorded traces here. We could also record them on the fly, but for this workshop we opted to ignore this step and use the json files directly.
+- Conceptually, we follow Anthropic's article [Demystifying evals for AI Agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents), but make some compromises for the sake of simplicity.
+- This branch bundles the buggy app (/src/qa), the workflow to be graded (/session_recordings) and the grading harness in one project for the purposes of this workshop. In a real world scenario, that might be different.
+- We are working with pre-recorded traces here. We could also record them on the fly, but for this workshop we opted to ignore this step and use the record json files directly. See below if you want to record your own.
 - We are embedding the tests into pytest here for simplicity, although it often makes sense to use a specialized evaluation harness for that.
 - Tool: LangChain OpenEvals. The tool's repository and documentation are here: https://github.com/langchain-ai/openevals . There are many other evaluation libraries out there:
 [deepevals](https://deepeval.com/), [pydanitc AI and its evaluator sub-library](https://pydantic.dev/docs/ai/overview/), or the [InspectAI](https://github.com/UKGovernmentBEIS/inspect_ai), among many others.
@@ -41,47 +41,30 @@ Part 2: An LLM-as-a-judge approach to score success on the recorded trajectories
         - PowerShell: `python -m pytest`
         - conda: `python -m pytest`
 
-- For Part 2 (LLM-as-a-judge), you need access to an LLM that acts as the judge. It is configured via a `.env` file in the project root (next to `pyproject.toml`). The file is ignored by git, so your API key stays local.
-    - create `.env` with the following variables:
-        - `PROVIDER`: one of `openai`, `anthropic` or `other`. Use `other` for any OpenAI-compatible endpoint (SAIA, OpenRouter, Kilo, ...).
+- For Part 2 (LLM-as-a-judge), you need access to an LLM that acts as the judge. Configure it in a `judge.env` file outside the repository. Pass the path to that file through the `WORKFLOW_JUDGE_ENV_FILE` environment variable.
+    - The file contains:
+        - `PROVIDER`: one of `openai`, `anthropic` or `other`. Use `other` for an OpenAI-compatible endpoint (SAIA, OpenRouter, Kilo, ...).
         - `API_KEY`: your API key for that provider.
         - `MODEL`: the model id as the provider names it.
         - `URL`: the endpoint's base URL. Only needed for `other`.
-    - examples:
-        - OpenAI:
-            ```
-            PROVIDER=openai
-            API_KEY=<your openai key>
-            MODEL=<openai model id>
-            ```
-        - Anthropic:
-            ```
-            PROVIDER=anthropic
-            API_KEY=<your anthropic key>
-            MODEL=<anthropic model id>
-            ```
-        - SAIA (GWDG):
-            ```
-            PROVIDER=other
-            URL=https://chat-ai.academiccloud.de/v1
-            API_KEY=<your saia key>
-            MODEL=<saia model id>
-            ```
-        - OpenRouter:
-            ```
-            PROVIDER=other
-            URL=https://openrouter.ai/api/v1
-            API_KEY=<your openrouter key>
-            MODEL=<openrouter model id, e.g. vendor/model>
-            ```
-        - Kilo Gateway (needs an API key from https://app.kilo.ai, the `/login kilo` of `pi` does not carry over):
-            ```
-            PROVIDER=other
-            URL=https://api.kilo.ai/api/gateway/
-            API_KEY=<your kilo key>
-            MODEL=<kilo model id>
-            ```
-    - the judge model must support structured output (JSON schema or tool calling). If a model fails with a response format or tool calling error, try a different one.
+    - Example:
+        ```
+        PROVIDER=other
+        URL=https://example.com/v1
+        API_KEY=<your api key>
+        MODEL=<model id>
+        ```
+    - Create the file with your editor of choice, outside the repository.
+    - Run the judge tests manually. Supply the file path only to that command; do not export or persist the variable.
+    - Unix/macOS:
+        ```bash
+        WORKFLOW_JUDGE_ENV_FILE=~/judge.env pytest -m judge
+        ```
+    - Windows PowerShell:
+        ```powershell
+        cmd /c 'set "WORKFLOW_JUDGE_ENV_FILE=C:\path\to\judge.env" && python -m pytest -m judge'
+        ```
+    - The judge model must support structured output (JSON schema or tool calling). If a model fails with a response format or tool calling error, try a different one.
 
 ## Goal:
 - try out a library for verifying agent trajectories.
@@ -127,7 +110,7 @@ Use your coding agent to work through this if you want. Have it explain what it 
 - If not done already: Have a look at the skill in `skills/bugfixing/SKILL.md` to see what the workflow is that it defines.
 - If not done already: read through the issue in `bug_ticket`. The code this talks about is in `src/qa/lotka.py`.
 - If not done already: OPTIONAL: install the skill and apply it to the `bug_ticket` to observer how it works.
-- Configure your .env file as descibed above.
+- Configure an external `.env` file and supply `WORKFLOW_JUDGE_ENV_FILE` only to the manual judge-test command as described above.
 - Consider `tests/test_bugfix_workflow_llmjudge.py`. This implements a simple
 llm_as_a_judge test that uses an llm to judge the workflows and grade them, using a numeric scale, on their adherence to the plan as described in the `bugfixing` skill.
 - Play with different models by changing the MODEL entry in your env file. What changes?

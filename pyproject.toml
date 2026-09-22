@@ -50,4 +50,5 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
-addopts = "-rA"
+markers = ["judge: LLM-as-judge tests, run manually"]
+addopts = "-rA -m 'not judge'"
