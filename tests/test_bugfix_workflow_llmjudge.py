@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 import pytest
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 from langchain_anthropic import ChatAnthropic
 from langchain_openai import ChatOpenAI
 from openevals import create_trajectory_llm_as_judge
@@ -23,54 +23,47 @@ HARNESSES = [
 MIN_ADHERENCE_SCORE = 0.7
 
 
+pytestmark = pytest.mark.judge
+
+
 @pytest.fixture(scope="module")
 def llm_judge():
-    load_dotenv()
-    provider = os.getenv("PROVIDER")
-    if provider is None:
-        raise ValueError("Error, provider must be given in env file")
+    env_file = os.getenv("WORKFLOW_JUDGE_ENV_FILE")
+    if env_file is None:
+        pytest.skip("judge tests are run manually; WORKFLOW_JUDGE_ENV_FILE not set")
 
-    if "API_KEY" not in os.environ:
-        raise ValueError("Error, API key must be given in .env file")
+    env_path = Path(env_file).expanduser()
+    if not env_path.is_file():
+        raise ValueError(f"Judge env file does not exist: {env_path}")
 
-    if "MODEL" not in os.environ:
-        raise ValueError("Error, MODEL must be given in .env file")
+    cfg = dotenv_values(env_path)  # dict only, os.environ untouched
+    missing = [k for k in ("PROVIDER", "API_KEY", "MODEL") if not cfg.get(k)]
+    if missing:
+        raise ValueError(f"Missing in judge env file: {', '.join(missing)}")
 
-    provider = provider.lower()
-    model = None
+    api_key = SecretStr(cfg["API_KEY"])
+    model_name = cfg["MODEL"]
+    provider = cfg["PROVIDER"].lower()
+
     if provider == "openai":
-        model = ChatOpenAI(
-            api_key=SecretStr(os.environ["API_KEY"]),
-            model=os.environ["MODEL"],
-            temperature=0,
-        )
-
-    elif provider == "anthropic":
-        model = ChatAnthropic(
-            api_key=SecretStr(os.environ["API_KEY"]),
-            model_name=os.environ["MODEL"],
+        return ChatOpenAI(api_key=api_key, model=model_name, temperature=0)
+    if provider == "anthropic":
+        return ChatAnthropic(
+            api_key=api_key,
+            model_name=model_name,
             temperature=0,
             timeout=None,
             stop=None,
         )
-    elif provider == "other":
-        url = os.getenv("URL")
-
-        model = os.environ["MODEL"]
-
-        if url is None or model is None:
-            raise ValueError(f"Error, {url} or {model} is None")
-
-        model = ChatOpenAI(
-            base_url=url,
-            api_key=SecretStr(os.environ["API_KEY"]),
-            model=model,
-            temperature=0,
+    if provider == "other":
+        url = cfg.get("URL")
+        if not url:
+            raise ValueError("URL must be given in judge env file for provider 'other'")
+        return ChatOpenAI(
+            base_url=url, api_key=api_key, model=model_name, temperature=0
         )
 
-    if model == None:
-        raise ValueError(f"Error, unknown provider: {provider}")
-    return model
+    raise ValueError(f"Unknown provider: {provider}")
 
 
 # get the skill's text. We need this for the judge to grade the session traces
@@ -83,7 +76,7 @@ def skill():
 
 
 @pytest.fixture
-def judge_prompt():
+def judge_prompt_plan():
     prompt = """
 You are an expert evaluator assessing whether an AI agent followed its declared plan during execution.
 Your task is to determine whether the agent's actions align with its stated plan.
@@ -139,8 +132,17 @@ Now, please grade the following example according to the above instructions:
     return prompt
 
 
+@pytest.fixture
+def judge_prompt_trajectory():
+    prompt = """
+    TODO
+"""
+
+
 @pytest.mark.parametrize("path,harness", HARNESSES)
-def test_workflow_score_plan_adherence(llm_judge, path, harness, skill, judge_prompt):
+def test_workflow_score_plan_adherence(
+    llm_judge, path, harness, skill, judge_prompt_plan
+):
 
     #  we need to parse the trace into the openai-messages format
     # that openevals wants
@@ -154,9 +156,41 @@ def test_workflow_score_plan_adherence(llm_judge, path, harness, skill, judge_pr
 
     evaluator = create_trajectory_llm_as_judge(
         judge=llm_judge,
-        prompt=judge_prompt,
+        prompt=judge_prompt_plan,
         feedback_key="skill_adherence",
         continuous=True,
+    )
+    result = evaluator(outputs=messages, inputs=task, plan=skill)
+
+    assert isinstance(result, dict)
+    pprint(result)
+    assert result["score"] >= MIN_ADHERENCE_SCORE, result["comment"]
+
+
+@pytest.mark.parametrize("path,harness", HARNESSES)
+def test_workflow_score_trajectory_quality(
+    llm_judge, path, harness, skill, judge_prompt_trajectory
+):
+
+    #  we need to parse the trace into the openai-messages format
+    # that openevals wants
+    messages = TrajectoryParser().parse(path, harness=harness)
+    # the human's bug report, not injected AGENTS.md or skill text
+    task = next(
+        m["content"]
+        for m in messages
+        if m["role"] == "user" and "bug ticket" in m["content"]
+    )
+
+    evaluator = create_trajectory_llm_as_judge(
+        judge=llm_judge,
+        prompt="YOUR PROMPT HERE",
+        feedback_key="skill_adherence",
+        continuous=True,
+    )
+
+    assert 4 == 8, (
+        "This test fails on purpose, you have to proved a proper prompt first"
     )
     result = evaluator(outputs=messages, inputs=task, plan=skill)
 
