@@ -42,6 +42,11 @@ Part 2: An LLM-as-a-judge approach to score success on the recorded trajectories
         - PowerShell: `python -m pytest`
         - conda: `python -m pytest`
 
+    - the llm-as-a-judge tests are separate and can only be run by hand:
+            `WORKFLOW_JUDGE_ENV_FILE=~/judge.env pytest -m judge`
+    they also print out the judge's result for inspection
+
+
 - For Part 2 (LLM-as-a-judge), you need access to an LLM that acts as the judge. Configure it in a `judge.env` file outside the repository. Pass the path to that file through the `WORKFLOW_JUDGE_ENV_FILE` environment variable.
     - The file contains:
         - `PROVIDER`: one of `openai`, `anthropic` or `other`. Use `other` for an OpenAI-compatible endpoint (SAIA, OpenRouter, Kilo, ...).
@@ -55,7 +60,8 @@ Part 2: An LLM-as-a-judge approach to score success on the recorded trajectories
         API_KEY=<your api key>
         MODEL=<model id>
         ```
-    - Create the file with your editor of choice, outside the repository.
+    - Create the file with your editor of choice, outside the repository,
+    e.g. in your home directory "~/judge.env".
     - Run the judge tests manually. Supply the file path only to that command; do not export or persist the variable.
     - Unix/macOS:
         ```bash
@@ -117,7 +123,7 @@ llm_as_a_judge test that uses an llm to judge the workflows and grade them, usin
 - Play with different models by changing the MODEL entry in your env file. What changes?
 - The given prompt is a copy of openeval's [PLAN_ADHERENCE_PROMPT](https://github.com/langchain-ai/openevals/blob/main/python/openevals/prompts/quality/plan_adherence.py). Check the content of the given evaluation prompt and investigate how well the judge adherences to it.
 - Try changing that prompt and observe the effects. What parts are missing? Would make a good judge?
-- The prompt determines the evaluation, e.g, plan adherence, trajectory efficiency and so on.  Try to use other prompts that test other things, e.g., [TRAJECTORY_ACCURACY_PROMPT](https://github.com/langchain-ai/openevals/blob/main/python/openevals/prompts/trajectory/accuracy.py). Some need a reference trajectory, for which we can use one of the given ones.
+- The prompt determines the evaluation, e.g, plan adherence, trajectory efficiency and so on.  Try to use other prompts that test other things, e.g., [tool selection accuracy](https://github.com/langchain-ai/openevals/blob/main/python/openevals/prompts/trajectory/tool_selection.py). Some need a reference trajectory, for which we can use the claude trajectory for instance.
 
 
 ## Questions
