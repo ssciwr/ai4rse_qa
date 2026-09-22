@@ -20,13 +20,12 @@ python3 -m pip install -e .[tests]
 Dependencies and project metadata are defined in `pyproject.toml`.
 
 # Entry points
-You can run `python3 ./src/qa/lotka.py --alpha a --beta b --gamma c --delta d --x0 x --y0 y --t T --n N with a,b,c,d,x,y,T,N positive real numbers for the parameters, initial conditions, time window and time resolution of the solution, respectively.
+You can run `python3 ./src/qa/lotka.py --alpha a --beta b --gamma c --delta d --x0 x --y0 y --t T --n N with a,b,c,d,x,y,T,N positive real numbers for the parameters, initial conditions, time window and time resolution of the solution, respectively.  This creates solution plots saved to the root dir of the project. Numerical tranjectories are not saved.
 You can also use lotka --alpha 1.0 --beta 0.1 --gamma 1.5 --delta 0.075 --x0 10 --y0 5 --t 40 --n 100  from the command line directly.
-This creates solution plots saved to the root dir of the project. Numerical tranjectories are not saved.
-
 # Testing
 We are using pytest to test this project. Tests live in {project_root_dir}/tests and the library tests are in test_lotka.py.
 test_bugfix_workflow.py is a test file that inspects agent trajectories for some skill usage. This is not relevant for the library, but for the bugfixing skill. Ignore it when dealing with library development.
+LLM-as-judge tests are marked `judge` and are run by the user only. Do not run `pytest -m judge`, set or search for `WORKFLOW_JUDGE_ENV_FILE`, or try to locate the external judge `.env` file.
 Report line and branch coverage whenever you are testing the project.
 
 # Coding guidelines

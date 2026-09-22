@@ -25,6 +25,7 @@ You can also use lotka --alpha 1.0 --beta 0.1 --gamma 1.5 --delta 0.075 --x0 10 
 # Testing
 We are using pytest to test this project. Tests live in {project_root_dir}/tests and the library tests are in test_lotka.py.
 test_bugfix_workflow.py is a test file that inspects agent trajectories for some skill usage. This is not relevant for the library, but for the bugfixing skill. Ignore it when dealing with library development.
+LLM-as-judge tests are marked `judge` and are run by the user only. Do not run `pytest -m judge`, set or search for `WORKFLOW_JUDGE_ENV_FILE`, or try to locate the external judge `.env` file.
 Report line and branch coverage whenever you are testing the project.
 
 # Coding guidelines
