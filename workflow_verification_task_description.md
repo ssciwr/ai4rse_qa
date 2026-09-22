@@ -8,6 +8,7 @@ Part 1: Deterministic workflow verification based on pre-recorded agent traces (
 Part 2: An LLM-as-a-judge approach to score success on the recorded trajectories, using the `openevals` library. This scores the entire trace in one go, but comes with LLM associated drawbacks.
 
 ## Remarks
+- Security: For step 2, it's recommended you create a dedicated api key for this session or use the saia key you got for this workshop, because we cannot rule out under all circumstances that an API key doesn't land in the agent's context window on accident.
 - Conceptually, we follow Anthropic's article [Demystifying evals for AI Agents](https://www.anthropic.com/engineering/demystifying-evals-for-ai-agents), but make some compromises for the sake of simplicity.
 - This branch bundles the buggy app (/src/qa), the workflow to be graded (/session_recordings) and the grading harness in one project for the purposes of this workshop. In a real world scenario, that might be different.
 - We are working with pre-recorded traces here. We could also record them on the fly, but for this workshop we opted to ignore this step and use the record json files directly. See below if you want to record your own.
