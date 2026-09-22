@@ -53,9 +53,10 @@ Scenario: <short descriptive title>
 - Validate the result. Review for faithfulness and accuracy, or simplify if neccessary.
 - Ask your agent to create a pytest-bdd tests from this and run it. The goal is to tie our formulated requirements to representative code that makes them executable and machine checkable.
 We now have formulated part of our requirements in executable form. They currently fail because there is no code to fulfill them.
-- Next build ask the agent to write the code to fulfill these tests. Consider whether using a new session is appropriate and why.
+- Next ask the agent to write the code to fulfill these tests. Consider whether using a new session is appropriate and why. Consider how to structure your workflow.
 - Review the resulting code. Do the tests work? does the code work? What went wrong? If anything did, for what reason?
 - Work your way through the features of the app until it is complete.
+- Try it out. Does the app conform to the specs we defined in the first steps?
 
 ## Questions
 - What are advantages and disadvantages of this approach?
