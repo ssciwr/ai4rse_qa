@@ -117,7 +117,7 @@ llm_as_a_judge test that uses an llm to judge the workflows and grade them, usin
 - Play with different models by changing the MODEL entry in your env file. What changes?
 - The given prompt is a copy of openeval's [PLAN_ADHERENCE_PROMPT](https://github.com/langchain-ai/openevals/blob/main/python/openevals/prompts/quality/plan_adherence.py). Check the content of the given evaluation prompt and investigate how well the judge adherences to it.
 - Try changing that prompt and observe the effects. What parts are missing? Would make a good judge?
-- The prompt determines the evaluation, e.g, plan adherence, trajectory efficiency and so on.  Try to use other prompts that test other things, e.g., [TRAJECTORY_ACCURACY_PROMPT](https://github.com/langchain-ai/openevals/blob/main/python/openevals/prompts/trajectory/accuracy.py). Some need a reference trajectory, for which we can use one of the given ones.
+- The prompt determines the evaluation, e.g, plan adherence, trajectory efficiency and so on.  Try to use other prompts that test other things, e.g., [tool selection accuracy](https://github.com/langchain-ai/openevals/blob/main/python/openevals/prompts/trajectory/tool_selection.py). Some need a reference trajectory, for which we can use the claude trajectory for instance.
 
 
 ## Questions
