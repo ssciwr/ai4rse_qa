@@ -42,6 +42,11 @@ Part 2: An LLM-as-a-judge approach to score success on the recorded trajectories
         - PowerShell: `python -m pytest`
         - conda: `python -m pytest`
 
+    - the llm-as-a-judge tests are separate and can only be run by hand:
+            `WORKFLOW_JUDGE_ENV_FILE=~/judge.env pytest -m judge`
+    they also print out the judge's result for inspection
+
+
 - For Part 2 (LLM-as-a-judge), you need access to an LLM that acts as the judge. Configure it in a `judge.env` file outside the repository. Pass the path to that file through the `WORKFLOW_JUDGE_ENV_FILE` environment variable.
     - The file contains:
         - `PROVIDER`: one of `openai`, `anthropic` or `other`. Use `other` for an OpenAI-compatible endpoint (SAIA, OpenRouter, Kilo, ...).
@@ -55,7 +60,8 @@ Part 2: An LLM-as-a-judge approach to score success on the recorded trajectories
         API_KEY=<your api key>
         MODEL=<model id>
         ```
-    - Create the file with your editor of choice, outside the repository.
+    - Create the file with your editor of choice, outside the repository,
+    e.g. in your home directory "~/judge.env".
     - Run the judge tests manually. Supply the file path only to that command; do not export or persist the variable.
     - Unix/macOS:
         ```bash
