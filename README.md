@@ -5,6 +5,8 @@
 
 This repository contains the exercise project for the AI4RSE 2026 workshop on quality assurance. It uses a small app that solves and visualizes the Lotka–Volterra predator–prey model as the example application.
 
+It is planned that this repository will be updated from time to time as the examples are used more and get improved.
+
 ## The model
 
 The Lotka-Volterra model is:
